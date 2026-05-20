@@ -1,0 +1,14 @@
+huggingface
+datasets
+pandas
+numpy 
+matplotlib
+seaborn
+scikit-learn
+langchain
+langchain-openai
+langchain-core
+langchain-community
+transformers
+torch
+langchain-google-genai
