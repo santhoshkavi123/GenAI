@@ -11,4 +11,6 @@ langchain-core
 langchain-community
 transformers
 torch
+torchvision
+torchaudio
 langchain-google-genai
