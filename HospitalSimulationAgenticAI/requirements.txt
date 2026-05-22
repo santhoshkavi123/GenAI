@@ -9,6 +9,7 @@ langchain
 langchain-openai
 langchain-core
 langchain-community
+langgraph
 transformers
 torch
 torchvision
