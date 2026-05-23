@@ -18,7 +18,7 @@ def gemini_model(input_text:str) -> str:
 
 
 # Gender Prediction Using Pre-Trained Model from Hugging Face
-def GenderPredictionFromPreTrainedModel(image, image_processor, model) -> int:
+def GenderPredictionFromPreTrainedModel(image, image_processor, model) -> str:
     """
         Function : Function used to generate gender prediction using pretrained huggingface model
 
@@ -45,7 +45,7 @@ def GenderPredictionFromPreTrainedModel(image, image_processor, model) -> int:
 
 
 # Age Prediction Using Pre-Trained Model from Hugging Face
-def AgePredictionForPretrainedModel(image, age_model, age_model_processor):
+def AgePredictionForPretrainedModel(image, age_model_processor, age_model)-> str:
     """
         Function : We are gonna pretrained Model for predicting the age 
 
