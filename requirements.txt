@@ -15,3 +15,7 @@ torch
 torchvision
 torchaudio
 langchain-google-genai
+langchain-aws 
+boto3
+streamlit
+PyYAML
