@@ -1,0 +1,6 @@
+inputs:
+  document_input_file_path :  'app/input/jp-morgan-chase-code-of-conduct-policy.pdf'
+outputs:
+  document_output_file_path : 'app/data/hr_policy_documents.pkl'
+logging:
+  logging_file_path : 'test_log.log'
