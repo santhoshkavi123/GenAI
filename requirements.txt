@@ -19,3 +19,4 @@ langchain-aws
 boto3
 streamlit
 PyYAML
+pypdf
