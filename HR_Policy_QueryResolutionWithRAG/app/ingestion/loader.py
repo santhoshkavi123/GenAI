@@ -25,7 +25,7 @@ def pdf_document_loader(config):
     loader = PyPDFLoader(
         file_path = input_file_path, 
         mode = 'single', # This is the Extraction Mode
-        extraction_mode = 'layout', 
+        extraction_mode = 'layout',  
         images_parser = False,
     )
 
