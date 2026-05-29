@@ -10,7 +10,7 @@ with open('config.yaml', 'r') as file:
 # pyrefly: ignore [missing-import]
 from langchain_core.documents import Document
 # pyrefly: ignore [missing-import]
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyMuPDFLoader
 
 def pdf_document_loader(config):
     """
@@ -22,14 +22,13 @@ def pdf_document_loader(config):
     
     # load the PDF document and split them into multiple documents 
     # And save them in pickle format
-    loader = PyPDFLoader(
+    loader = PyMuPDFLoader(
         file_path = input_file_path, 
-        mode = 'single', # This is the Extraction Mode
-        extraction_mode = 'layout',  
-        images_parser = False,
+        mode = 'page',
+        extract_images = False
     )
 
-    documents = loader.load_and_split()
+    documents = loader.load()
     logger.info(f"Length of Documents : {len(documents)}")
 
     # Save documents to pickle file
@@ -48,4 +47,5 @@ if __name__ == '__main__':
 
     logger.info("===INFO:CALLING THE PDF DOCUMENT LOADER FUNCTION===")
     pdf_document_loader(config)
+    print("=== SUCCESS : RUNNING THE LOGGER FILE ====")
     logger.info("===SUCCESS:LOADED THE PDF DOCUMENT===")
