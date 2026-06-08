@@ -3,6 +3,9 @@ inputs:
 outputs:
   document_output_file_path : 'app/data/hr_policy_documents.pkl'
   chunked_output_file_path : 'app/data/hr_policy_chunked_documents.pkl'
+  semantic_chunked_output_file_path : 'app/data/hr_sematic_chunked_documents.pkl'
+indexes:
+  pinecone_index_name : 'hrpolicyindex'
 logging:
   logging_file_path : 'test_log.log'
 chunking_arguments:
