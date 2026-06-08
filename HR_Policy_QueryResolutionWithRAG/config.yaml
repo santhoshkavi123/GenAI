@@ -5,3 +5,6 @@ outputs:
   chunked_output_file_path : 'app/data/hr_policy_chunked_documents.pkl'
 logging:
   logging_file_path : 'test_log.log'
+chunking_arguments:
+  min_doc_len : 40
+  doc_index : 6

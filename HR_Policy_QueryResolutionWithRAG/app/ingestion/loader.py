@@ -1,6 +1,7 @@
 import os
 import pickle
 import yaml
+import logging 
 
 os.chdir("/Users/kavisanthoshkumar/Documents/GenerativeAIusingAWS/HR_Policy_QueryResolutionWithRAG")
 with open('config.yaml', 'r') as file:
@@ -40,7 +41,6 @@ def pdf_document_loader(config):
 
 if __name__ == '__main__':
     # Create logging file
-    import logging 
     logging.basicConfig(filename = config['logging']['logging_file_path'], 
                             filemode= 'w')
     logger = logging.getLogger(__name__)
