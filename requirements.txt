@@ -21,3 +21,6 @@ streamlit
 PyYAML
 pypdf
 pymupdf
+langchain_experimental
+langchain-pinecone
+pinecone
