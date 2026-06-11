@@ -69,7 +69,7 @@ if __name__ == "__main__":
     with open(config['outputs']['chunked_output_file_path'], "wb") as f:
         pickle.dump(hr_policy_chunked_documents, f)
 
-    print("=== SUCCESS : SAVED THE HR POLICY CHUNKED DOCUMENTS ===")
+    print("=== SUCCESS : SAVED THE HR POLICY CHUNKED DOCUMENTS ==")
 
     
     
