@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Multi-Agent AI Workflow Simulation</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Boxicons for premium icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="header-logo">
+                <i class="bx bxs-institution pulse-icon"></i>
+                <div class="logo-text">
+                    <h1>AURA Healthcare</h1>
+                    <span class="subtitle">Agentic Multi-Agent Workflow Simulation</span>
+                </div>
+            </div>
+            <div class="header-status">
+                <span class="status-indicator online"></span>
+                <span class="status-text">LLM Engine: Gemini 3.5 Flash</span>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <main class="app-body">
+            <!-- SIDEBAR: PATIENT SELECTOR -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h2><i class="bx bx-group"></i> Patient Records</h2>
+                    <p class="section-desc">Select a patient profile from the medical database to run the diagnostic agentic workflow.</p>
+                    <div class="search-box">
+                        <i class="bx bx-search"></i>
+                        <input type="text" id="patient-search" placeholder="Search patients...">
+                    </div>
+                    <div class="patient-list" id="patient-list-container">
+                        <!-- Loaded dynamically -->
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+
+                <!-- CONTROLS PANEL -->
+                <div class="sidebar-section controls-section">
+                    <h2><i class="bx bx-slider-alt"></i> Run Controller</h2>
+                    <div class="control-actions">
+                        <button id="btn-run" class="btn btn-primary"><i class="bx bx-play-circle"></i> Run Workflow</button>
+                        <button id="btn-step" class="btn btn-secondary"><i class="bx bx-skip-next-circle"></i> Next Node</button>
+                        <button id="btn-reset" class="btn btn-danger"><i class="bx bx-reset"></i> Reset</button>
+                    </div>
+                    <div class="toggle-control">
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-mismatch">
+                            <span class="slider round"></span>
+                        </label>
+                        <div class="toggle-text">
+                            <span class="toggle-title">Simulate Mismatched ID</span>
+                            <span class="toggle-desc">Trigger Front Desk verification failure</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CONTENT AREA -->
+            <section class="main-content">
+                <!-- TOP BANNER: ORCHESTRATION STATE GRAPH -->
+                <div class="content-panel graph-panel">
+                    <div class="panel-header">
+                        <h3><i class="bx bx-git-repo-forked"></i> LangGraph Orchestration State Graph</h3>
+                        <span class="node-badge" id="current-node-badge">State: IDLE</span>
+                    </div>
+                    
+                    <!-- SVG State Graph -->
+                    <div class="state-graph-container">
+                        <svg class="state-graph" viewBox="0 0 950 150">
+                            <!-- Definitions for arrows -->
+                            <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+                                </marker>
+                                <marker id="arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#06b6d4" />
+                                </marker>
+                                <marker id="arrow-success" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+                                </marker>
+                            </defs>
+
+                            <!-- Connection Lines -->
+                            <line id="edge-start" x1="80" y1="75" x2="160" y2="75" stroke="#475569" stroke-width="3" marker-end="url(#arrow)" />
+                            
+                            <!-- Split paths after Front Desk -->
+                            <path id="edge-fd-phys" d="M 280 75 L 360 75" stroke="#475569" stroke-width="3" fill="none" marker-end="url(#arrow)" />
+                            <path id="edge-fd-fail" d="M 220 105 L 220 120 L 110 120" stroke="#475569" stroke-width="3" fill="none" marker-end="url(#arrow)" />
+                            
+                            <!-- Paths from Physician -->
+                            <path id="edge-phys-rad" d="M 480 60 C 530 25, 610 25, 660 60" stroke="#475569" stroke-width="3" fill="none" marker-end="url(#arrow)" />
+                            <path id="edge-phys-end" d="M 480 90 C 580 130, 780 130, 850 85" stroke="#475569" stroke-width="3" fill="none" marker-end="url(#arrow)" />
+
+                            <!-- Path from Radiologist -->
+                            <line id="edge-rad-end" x1="780" y1="75" x2="850" y2="75" stroke="#475569" stroke-width="3" marker-end="url(#arrow)" />
+
+                            <!-- Nodes Group -->
+                            <!-- START -->
+                            <g class="graph-node" id="node-START">
+                                <circle cx="50" cy="75" r="30" />
+                                <text x="50" y="80" text-anchor="middle" font-weight="600">START</text>
+                            </g>
+
+                            <!-- Node 1: Front Desk Verification -->
+                            <g class="graph-node" id="node-front_desk_agent_node">
+                                <circle cx="220" cy="75" r="45" />
+                                <text x="220" y="72" text-anchor="middle" font-weight="600">Front Desk</text>
+                                <text x="220" y="88" text-anchor="middle" font-size="10px" class="role-lbl">Verify ID</text>
+                            </g>
+
+                            <!-- Exit Verification Failed -->
+                            <g class="graph-node failed-node" id="node-exit_failed">
+                                <rect x="30" y="105" width="80" height="30" rx="6" />
+                                <text x="70" y="124" text-anchor="middle" font-weight="600" font-size="11px">Exit: Failed</text>
+                            </g>
+
+                            <!-- Node 2: Physician Desk -->
+                            <g class="graph-node" id="node-physician_agent_node">
+                                <circle cx="420" cy="75" r="45" />
+                                <text x="420" y="72" text-anchor="middle" font-weight="600">Physician</text>
+                                <text x="420" y="88" text-anchor="middle" font-size="10px" class="role-lbl">Consult & Dx</text>
+                            </g>
+
+                            <!-- Node 3: Radiologist diagnostic -->
+                            <g class="graph-node" id="node-radiologist_agent_node">
+                                <circle cx="720" cy="75" r="45" />
+                                <text x="720" y="72" text-anchor="middle" font-weight="600">Radiologist</text>
+                                <text x="720" y="88" text-anchor="middle" font-size="10px" class="role-lbl">X-Ray (ViT)</text>
+                            </g>
+
+                            <!-- END -->
+                            <g class="graph-node" id="node-END">
+                                <circle cx="890" cy="75" r="30" />
+                                <text x="890" y="80" text-anchor="middle" font-weight="600">END</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- DYNAMIC WORKSPACE (THE AGENT CARDS) -->
+                <div class="agent-dashboard">
+                    
+                    <!-- AGENT 1: FRONT DESK -->
+                    <div class="content-panel agent-card" id="card-front-desk">
+                        <div class="panel-header">
+                            <span class="agent-number">01</span>
+                            <h3>Front Desk Identity Agent</h3>
+                            <div class="agent-badge badge-neutral" id="badge-fd">Inactive</div>
+                        </div>
+                        <div class="panel-content">
+                            <!-- Face scan container -->
+                            <div class="scanner-container">
+                                <div class="image-frame">
+                                    <img id="face-id-img" src="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%231e293b'&gt;&lt;circle cx='50' cy='35' r='20' fill='%23475569'/&gt;&lt;path d='M20 80c0-15 12-25 30-25s30 10 30 25z' fill='%23475569'/&gt;&lt;/svg&gt;" alt="Patient Face Verification">
+                                    <div class="scan-bar" id="face-scan-bar"></div>
+                                    <div class="face-overlay" id="face-overlay-box"></div>
+                                </div>
+                                <div class="scan-results">
+                                    <div class="scan-metric">
+                                        <span class="label">Detected Gender</span>
+                                        <span class="value" id="fd-val-gender">--</span>
+                                    </div>
+                                    <div class="scan-metric">
+                                        <span class="label">Detected Age Group</span>
+                                        <span class="value" id="fd-val-age">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="agent-narrative" id="fd-narrative">
+                                <em>Waiting for verification to start...</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AGENT 2: PHYSICIAN -->
+                    <div class="content-panel agent-card" id="card-physician">
+                        <div class="panel-header">
+                            <span class="agent-number">02</span>
+                            <h3>Physician Consulting Agent</h3>
+                            <div class="agent-badge badge-neutral" id="badge-phys">Inactive</div>
+                        </div>
+                        <div class="panel-content flex-content">
+                            <!-- Physician Chat Console -->
+                            <div class="chat-section">
+                                <h4>Anamnesis Dialogue Log</h4>
+                                <div class="chat-box" id="physician-chat-box">
+                                    <div class="chat-placeholder">No consultation session active</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Vitals Monitor Interface -->
+                            <div class="vitals-section">
+                                <h4>Physical Examination Monitor</h4>
+                                <div class="vitals-monitor">
+                                    <div class="vitals-grid">
+                                        <div class="vital-node">
+                                            <div class="vital-header">
+                                                <span class="lbl"><i class="bx bxs-thermometer"></i> Fever</span>
+                                            </div>
+                                            <span class="val" id="vital-val-fever">--</span>
+                                        </div>
+                                        <div class="vital-node">
+                                            <div class="vital-header">
+                                                <span class="lbl"><i class="bx bx-pulse"></i> Blood Pressure</span>
+                                            </div>
+                                            <span class="val bp-val" id="vital-val-bp">--</span>
+                                        </div>
+                                        <div class="vital-node">
+                                            <div class="vital-header">
+                                                <span class="lbl"><i class="bx bxs-droplet-half"></i> Cholesterol</span>
+                                            </div>
+                                            <span class="val" id="vital-val-chol">--</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="diagnosis-box" id="physician-dx-box">
+                                    <span class="dx-label">Clinical Routing Decision:</span>
+                                    <span class="dx-value" id="phys-dx-route">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AGENT 3: RADIOLOGIST -->
+                    <div class="content-panel agent-card" id="card-radiologist">
+                        <div class="panel-header">
+                            <span class="agent-number">03</span>
+                            <h3>Radiologist Classification Agent</h3>
+                            <div class="agent-badge badge-neutral" id="badge-rad">Inactive</div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="radiology-workspace">
+                                <div class="scanner-container xray-scanner">
+                                    <div class="image-frame xray-frame">
+                                        <img id="xray-img" src="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%230f172a'&gt;&lt;rect width='100' height='100' fill='%23020617'/&gt;&lt;path d='M35 15c0 0-5 25-5 35s5 35 5 35M65 15c0 0 5 25 5 35s-5 35-5 35' stroke='%23334155' stroke-width='3' fill='none'/&gt;&lt;/svg&gt;" alt="Chest X-Ray Diagnostic">
+                                        <div class="scan-bar" id="xray-scan-bar"></div>
+                                        <div class="heatmap-overlay" id="xray-heatmap"></div>
+                                    </div>
+                                    <div class="scan-results xray-results">
+                                        <div class="scan-metric large-metric">
+                                            <span class="label">X-Ray Classification</span>
+                                            <span class="value" id="rad-val-class">--</span>
+                                        </div>
+                                        <div class="vit-tag">Model: ViT-XRay-Classification</div>
+                                    </div>
+                                </div>
+                                <div class="agent-narrative" id="rad-narrative">
+                                    <em>Radiological scans will load conditionally if ordered by the physician.</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BOTTOM LOGGER CONSOLE -->
+                <div class="content-panel console-panel">
+                    <div class="panel-header">
+                        <h3><i class="bx bx-terminal"></i> Multi-Agent Execution Logs</h3>
+                        <button id="btn-clear-console" class="btn-clear"><i class="bx bx-trash"></i> Clear</button>
+                    </div>
+                    <div class="console-box" id="console-output">
+                        <div class="console-line system">[SYSTEM] System ready. Select a patient and press "Run Workflow" to begin simulation.</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
